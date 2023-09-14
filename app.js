@@ -15,12 +15,16 @@ dotenv.config({
 }); 
 
 const FRONTEND_URL = process.env.FRONTEND_URL;
-app.use(cors());
 
-app.use(cors({
-    origin: FRONTEND_URL,
-    credentials:true
-}))
+const corsOptions = {
+  origin: FRONTEND_URL,
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+
 
 // Database Connection
 const DB = process.env.DB;
