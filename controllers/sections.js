@@ -41,26 +41,31 @@ import { catchAsyncError } from "../Middlewares/catchAsyncError.js";
 // Test//
 export const getAllSections =  catchAsyncError(async(req,res,next) => {
  const sectionDetails = await Section.aggregate([
-        {
-          $lookup: {
-            from: "product", // Replace 'products' with your product collection name
-            localField: '_id',
-            foreignField: 'section_Id',
-            as: 'productsInSection',
-          },
+    {
+      $lookup: {
+        from: "products", // The target collection
+        localField: '_id', // The field in the "sections" collection to match
+        foreignField: 'section_Id', // The field in the "products" collection to match
+        as: 'productsInSection', // The alias for the merged data in the output
+      },
+    },
+    {
+      $addFields: {
+        section_id: '$_id',
+        section_name: '$name',
+        numOfProducts: {
+          $reduce: {
+            input: '$productsInSection',
+            initialValue: 0,
+            in: { $add: ['$$value', 1] }
+          }
         },
-        {
-          $project: {
-            section_id: '$_id',
-            section_name: '$name',
-            numOfProducts: { $size: '$productsInSection[0]' },
-            totalQuantity: { $sum: '$productsInSection.quantity' },
-          },
-        },
-      ]);
+        totalQuantity: { $sum: '$productsInSection.quantity' },
+      },
+    },
+  ]);
 
-      res.status(200).json({sectionDetails})
-   
+  res.status(200).json({ sectionDetails });
 })
 // Test//
 
