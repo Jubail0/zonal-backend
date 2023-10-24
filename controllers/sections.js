@@ -53,7 +53,7 @@ export const getAllSections =  catchAsyncError(async(req,res,next) => {
           $project: {
             section_id: '$_id',
             section_name: '$name',
-            numOfProducts: { $size: '$productsInSection' },
+            numOfProducts: { $size: '$productsInSection[0]' },
             totalQuantity: { $sum: '$productsInSection.quantity' },
           },
         },
