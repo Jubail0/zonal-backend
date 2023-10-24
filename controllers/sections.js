@@ -58,7 +58,6 @@ export const getAllSections =  catchAsyncError(async(req,res,next) => {
           },
         },
       ]);
- console.log(sectionDetails)
 
       res.status(200).json({sectionDetails})
    
