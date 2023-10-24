@@ -4,7 +4,7 @@ import { catchAsyncError } from "../Middlewares/catchAsyncError.js";
 
 
 
-Get All Sections Data
+// Get All Sections Data
 const calculateData = async(sections) => {
 
     const sectionDetails = await Promise.all(
