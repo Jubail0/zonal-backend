@@ -43,7 +43,7 @@ export const getAllSections =  catchAsyncError(async(req,res,next) => {
  const sectionDetails = await Section.aggregate([
         {
           $lookup: {
-            from: Product, // Replace 'products' with your product collection name
+            from: "product", // Replace 'products' with your product collection name
             localField: '_id',
             foreignField: 'section_Id',
             as: 'productsInSection',
