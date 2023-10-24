@@ -4,69 +4,69 @@ import { catchAsyncError } from "../Middlewares/catchAsyncError.js";
 
 
 
-// Get All Sections Data
-// const calculateData = async(sections) => {
+Get All Sections Data
+const calculateData = async(sections) => {
 
-//     const sectionDetails = await Promise.all(
-//         sections.map(async(section) => {
-//             const productInSection = await Product.find({
-//                 section_Id : section._id
-//             }).lean();
+    const sectionDetails = await Promise.all(
+        sections.map(async(section) => {
+            const productInSection = await Product.find({
+                section_Id : section._id
+            }).lean();
 
-//             const numOfProducts = productInSection.length;
-//             const totalQuantity = productInSection.reduce((sum,product) => sum + product.quantity, 0);
+            const numOfProducts = productInSection.length;
+            const totalQuantity = productInSection.reduce((sum,product) => sum + product.quantity, 0);
 
-//             return {
-//                 section_id : section._id,
-//                 section_name : section.name,
-//                 numOfProducts,
-//                 totalQuantity
-//             }
-//         })
+            return {
+                section_id : section._id,
+                section_name : section.name,
+                numOfProducts,
+                totalQuantity
+            }
+        })
  
-//     )
+    )
 
-//     return sectionDetails;
-// }
+    return sectionDetails;
+}
 
-// export const getAllSections =  catchAsyncError(async(req,res,next) => {
+export const getAllSections =  catchAsyncError(async(req,res,next) => {
 
-//     const sections = await Section.find({}).lean();
-//     // Get all Data
-//     const sectionDetails = await calculateData(sections)
-//     const numOfSections = sections.length;
-//     res.status(200).json({sectionDetails, numOfSections})
-// })
+    const sections = await Section.find({}).lean();
+    // Get all Data
+    const sectionDetails = await calculateData(sections)
+    const numOfSections = sections.length;
+    res.status(200).json({sectionDetails, numOfSections})
+})
 
 // Test//
-export const getAllSections =  catchAsyncError(async(req,res,next) => {
- const sectionDetails = await Section.aggregate([
-    {
-      $lookup: {
-        from: "products", // The target collection
-        localField: '_id', // The field in the "sections" collection to match
-        foreignField: 'section_Id', // The field in the "products" collection to match
-        as: 'productsInSection', // The alias for the merged data in the output
-      },
-    },
-    {
-      $addFields: {
-        section_id: '$_id',
-        section_name: '$name',
-        numOfProducts: {
-          $reduce: {
-            input: '$productsInSection',
-            initialValue: 0,
-            in: { $add: ['$$value', 1] }
-          }
-        },
-        totalQuantity: { $sum: '$productsInSection.quantity' },
-      },
-    },
-  ]);
+// export const getAllSections =  catchAsyncError(async(req,res,next) => {
+//  const sectionDetails = await Section.aggregate([
+//     {
+//       $lookup: {
+//         from: "products", // The target collection
+//         localField: '_id', // The field in the "sections" collection to match
+//         foreignField: 'section_Id', // The field in the "products" collection to match
+//         as: 'productsInSection', // The alias for the merged data in the output
+//       },
+//     },
+//     {
+//       $addFields: {
+//         section_id: '$_id',
+//         section_name: '$name',
+//         numOfProducts: {
+//           $reduce: {
+//             input: '$productsInSection',
+//             initialValue: 0,
+//             in: { $add: ['$$value', 1] }
+//           }
+//         },
+//         totalQuantity: { $sum: '$productsInSection.quantity' },
+//       },
+//     },
+//   ]);
 
-  res.status(200).json({ sectionDetails });
-})
+//   res.status(200).json({ sectionDetails });
+// })
 // Test//
 
 // Create Section
